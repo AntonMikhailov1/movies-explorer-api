@@ -1,5 +1,4 @@
 const router = require('express').Router();
 
-router.get('/', getUser);
-router.patch('/user', );
-
+router.get('/me', getUser);
+router.patch('/user', updateUser);
