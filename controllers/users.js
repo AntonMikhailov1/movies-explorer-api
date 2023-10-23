@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -65,7 +66,7 @@ const createUser = (req, res, next) => {
     .catch(next);
 };
 
-const login = (req, res, next) => {
+const signInUser = (req, res, next) => {
   const { email, password } = req.body;
 
   User.findUserByCredentials(email, password)
@@ -86,16 +87,16 @@ const login = (req, res, next) => {
     .catch(next);
 };
 
-const logout = (req, res) => {
+const signOutUser = (req, res) => {
   res.clearCookie('jwt').send({ message: 'Вы вышли из системы' });
 };
 
 const updateUser = (req, res, next) => {
-  const { name, about } = req.body;
+  const { name, email } = req.body;
 
   User.findByIdAndUpdate(
     req.user._id,
-    { name, about },
+    { name, email },
     { new: true, runValidators: true },
   )
     .then((user) => {
@@ -116,32 +117,10 @@ const updateUser = (req, res, next) => {
     });
 };
 
-const updateAvatar = (req, res, next) => {
-  const { avatar } = req.body;
-
-  User.findByIdAndUpdate(
-    req.user._id,
-    { avatar },
-    { new: true, runValidators: true },
-  )
-    .then((user) => res.status(httpStatus.OK).send(user))
-    .catch((err) => {
-      if (err instanceof mongoose.Error.ValidationError) {
-        return next(
-          new BadRequestError({
-            message: 'Переданы некорректные данные при обновлении пофиля',
-          }),
-        );
-      }
-      next(err);
-    });
-};
-
 module.exports = {
   getUser,
   createUser,
   updateUser,
-  updateAvatar,
-  login,
-  logout,
+  signInUser,
+  signOutUser,
 };
