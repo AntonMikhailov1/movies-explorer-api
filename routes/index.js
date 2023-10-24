@@ -7,8 +7,7 @@ const { createUser, signInUser, signOutUser } = require('../controllers/users');
 
 const auth = require('../middlewares/auth');
 
-// const { createUser, login } = require('../controllers/users');
-// const { validateUser, validateLogin } = require('../middlewares/validation');
+const { validateUser, validateLogin } = require('../middlewares/validation');
 
 router.post('/signup', validateUser, createUser);
 router.post('/signin', validateLogin, signInUser);
