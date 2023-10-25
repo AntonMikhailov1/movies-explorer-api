@@ -1,4 +1,4 @@
-// require('dotenv').config();
+require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -14,12 +14,20 @@ const rateLimiter = require('./middlewares/rate-limiter');
 
 const router = require('./routes/index');
 
-const MONGO_URL = 'mongodb://127.0.0.1:27017/bitfilmsdb';
-const PORT = 3000;
+const { MONGO_URL, PORT } = require('./utils/config');
 
 const app = express();
 
 mongoose.connect(MONGO_URL);
+mongoose.connection.once('open', () => {
+  if (mongoose.connection.readyState === 1) {
+    console.log('Database connected:', MONGO_URL);
+  }
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('connection error:', err);
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
