@@ -1,4 +1,4 @@
-require('dotenv').config();
+// require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -14,12 +14,13 @@ const rateLimiter = require('./middlewares/rate-limiter');
 
 const router = require('./routes/index');
 
-const { MONGO_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
-const { PORT = 3000 } = process.env;
+const MONGO_URL = 'mongodb://127.0.0.1:27017/bitfilmsdb';
+const PORT = 3000;
 
 const app = express();
 
 mongoose.connect(MONGO_URL);
+console.log(mongoose.connection.readyState);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -30,6 +31,10 @@ app.use(requestLogger);
 app.use(rateLimiter);
 
 app.use(cors);
+
+app.get('/', (req, res) => {
+  res.status(200).send({ message: 'Hello World!' });
+});
 
 app.use('/', router);
 
