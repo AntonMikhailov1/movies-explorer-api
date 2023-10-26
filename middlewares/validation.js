@@ -10,29 +10,30 @@ const urlValidation = (url) => {
 
 const validateMovie = celebrate({
   body: Joi.object().keys({
-    country: Joi.string().required().min(2).max(30),
-    director: Joi.string().required().min(2).max(30),
+    country: Joi.string().required(),
+    director: Joi.string().required(),
     duration: Joi.number().required(),
     year: Joi.string().required(),
     description: Joi.string().required(),
     image: Joi.string().custom(urlValidation).required(),
     trailerLink: Joi.string().custom(urlValidation).required(),
     thumbnail: Joi.string().custom(urlValidation).required(),
-    nameRu: Joi.string().required().min(1).max(30),
-    nameEn: Joi.string().required().min(1).max(30),
+    movieId: Joi.number().required(),
+    nameRu: Joi.string().required(),
+    nameEn: Joi.string().required(),
 
   }),
 });
 
 const validateMovieId = celebrate({
   params: Joi.object().keys({
-    movieId: Joi.string().alphanum().length(24).hex(),
+    movieId: Joi.string().length(24).hex(),
   }),
 });
 
 const validateUserId = celebrate({
   params: Joi.object().keys({
-    owner: Joi.string().alphanum().length(24).hex(),
+    owner: Joi.string().length(24).hex(),
   }),
 });
 
@@ -48,7 +49,6 @@ const validateUserUpdate = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     email: Joi.string().required().email(),
-    password: Joi.string().required(),
   }),
 });
 

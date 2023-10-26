@@ -1,4 +1,4 @@
-const httpStatus = require('../utils/constants');
+const { httpStatus } = require('../utils/constants');
 
 class ConflictError extends Error {
   constructor(message) {

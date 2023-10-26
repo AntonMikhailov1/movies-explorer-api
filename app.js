@@ -37,11 +37,7 @@ app.use(helmet());
 app.use(requestLogger);
 app.use(rateLimiter);
 
-app.use(cors);
-
-app.get('/', (req, res) => {
-  res.status(200).send({ message: 'Hello World!' });
-});
+app.use(cors());
 
 app.use('/', router);
 

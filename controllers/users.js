@@ -3,26 +3,24 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { httpStatus } = require('../utils/constants');
+const { httpStatus, errorMessages } = require('../utils/constants');
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
 const ConflictError = require('../errors/ConflictError');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { JWT_SECRET } = require('../utils/config');
 
 const getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError({
-          message: 'Пользователь по указанному id не найден',
-        });
+        throw new NotFoundError(errorMessages.NOT_FOUND_USER_MESSAGE);
       }
       res.status(httpStatus.OK).send(user);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        next(BadRequestError({ message: 'Переданы некорректные данные' }));
+        next(BadRequestError(errorMessages.INCORRECT_DATA_MESSAGE));
       } else next(err);
     });
 };
@@ -47,17 +45,12 @@ const createUser = (req, res, next) => {
         .catch((err) => {
           if (err.code === 11000) {
             return next(
-              new ConflictError({
-                message: 'Пользователь с таким email уже существует',
-              }),
+              new ConflictError(errorMessages.CONFLICT_USER_MESSAGE),
             );
           }
           if (err instanceof mongoose.Error.ValidationError) {
             return next(
-              new BadRequestError({
-                message:
-                  'Переданы некоректные данные при создании пользователя',
-              }),
+              new BadRequestError(errorMessages.INCORRECT_USER_DATA_MESSAGE),
             );
           }
           next(err);
@@ -73,7 +66,7 @@ const signInUser = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        JWT_SECRET,
         { expiresIn: '7d' },
       );
       res
@@ -101,16 +94,14 @@ const updateUser = (req, res, next) => {
   )
     .then((user) => {
       if (!user) {
-        throw new NotFoundError({ message: 'Пользователь не найден' });
+        throw new NotFoundError(errorMessages.NOT_FOUND_USER_MESSAGE);
       }
       res.status(httpStatus.OK).send(user);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         return next(
-          new BadRequestError({
-            message: 'Переданы некорректные данные при обновлении пофиля',
-          }),
+          new BadRequestError(errorMessages.INCORRECT_DATA_MESSAGE),
         );
       }
       next(err);

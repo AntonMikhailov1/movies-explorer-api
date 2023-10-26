@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 const Movie = require('../models/movie');
-const { httpStatus } = require('../utils/constants');
+const { httpStatus, errorMessages } = require('../utils/constants');
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
 const ForbiddenError = require('../errors/ForbiddenError');
 
-const getMovies = (res, next) => {
+const getMovies = (req, res, next) => {
   Movie.find({})
     .then((cards) => res.status(httpStatus.OK).send(cards))
     .catch(next);
@@ -41,13 +41,24 @@ const createMovie = (req, res, next) => {
     nameRu,
     nameEn,
   })
-    .then((card) => res.status(httpStatus.CREATED).send(card))
+    .then((movie) => res.status(httpStatus.CREATED).send({
+      _id: movie._id,
+      country: movie.country,
+      director: movie.director,
+      duration: movie.duration,
+      year: movie.year,
+      description: movie.description,
+      image: movie.image,
+      trailerLink: movie.trailerLink,
+      thumbnail: movie.thumbnail,
+      movieId: movie.movieId,
+      nameRu: movie.nameRu,
+      nameEn: movie.nameEn,
+    }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(
-          new BadRequestError({
-            message: 'Переданы некорректные данные при создании карточки',
-          }),
+          new BadRequestError(errorMessages.INCORRECT_MOVIE_DATA_MESSAGE),
         );
       } else {
         next(err);
@@ -56,25 +67,25 @@ const createMovie = (req, res, next) => {
 };
 
 const deleteMovie = (req, res, next) => {
-  Movie.findById(req.params.cardId)
-    .then((card) => {
-      if (!card) {
+  Movie.findById(req.params.movieId)
+    .then((movie) => {
+      if (!movie) {
         return next(
-          new NotFoundError({ message: 'Карточка с указанным id не найдена' }),
+          new NotFoundError(errorMessages.NOT_FOUND_MOVIE_MESSAGE),
         );
       }
-      if (!card.owner.equals(req.user._id)) {
-        return next(new ForbiddenError({ message: 'Нет доступа' }));
+      if (!movie.owner.equals(req.user._id)) {
+        return next(new ForbiddenError(errorMessages.FORBIDDEN_MESSAGE));
       }
-      return card
+      return movie
         .deleteOne()
         .then(() => res
           .status(httpStatus.OK)
-          .send({ message: 'Карточка успешно удалена' }));
+          .send({ message: 'Фильм удален' }));
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        next(new BadRequestError({ message: 'Переданы некорректные данные' }));
+        next(new BadRequestError(errorMessages.INCORRECT_DATA_MESSAGE));
       } else {
         next(err);
       }

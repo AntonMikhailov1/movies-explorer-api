@@ -1,4 +1,4 @@
-const httpStatus = require('../utils/constants');
+const { httpStatus } = require('../utils/constants');
 
 class InternalServerError extends Error {
   constructor(message) {

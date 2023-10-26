@@ -1,4 +1,4 @@
-const { httpStatus } = require('../utils/constants');
+const { httpStatus, errorMessages } = require('../utils/constants');
 
 const errorHandler = (err, req, res, next) => {
   if (err.status) {
@@ -7,7 +7,7 @@ const errorHandler = (err, req, res, next) => {
   }
   res
     .status(httpStatus.INTERNAL_SERVER_ERROR)
-    .send({ message: `Ошибка по умолчанию: ${err.message}` });
+    .send({ message: errorMessages.INTERNAL_SERVER_ERROR_MESSAGE });
 
   next();
 };
