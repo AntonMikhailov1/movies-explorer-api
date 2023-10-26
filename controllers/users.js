@@ -77,7 +77,14 @@ const signInUser = (req, res, next) => {
         })
         .send({ message: 'Авторизация прошла успешно' });
     })
-    .catch(next);
+    .catch((err) => {
+      if (err instanceof mongoose.Error.ValidationError) {
+        return next(
+          new BadRequestError(errorMessages.INCORRECT_USER_DATA_MESSAGE),
+        );
+      }
+      next(err);
+    });
 };
 
 const signOutUser = (req, res) => {
