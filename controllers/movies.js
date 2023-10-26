@@ -7,7 +7,7 @@ const ForbiddenError = require('../errors/ForbiddenError');
 
 const getMovies = (req, res, next) => {
   Movie.find({})
-    .then((cards) => res.status(httpStatus.OK).send(cards))
+    .then((movies) => res.status(httpStatus.OK).send(movies))
     .catch(next);
 };
 

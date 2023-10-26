@@ -106,6 +106,11 @@ const updateUser = (req, res, next) => {
       res.status(httpStatus.OK).send(user);
     })
     .catch((err) => {
+      if (err.code === 11000) {
+        return next(
+          new ConflictError(errorMessages.CONFLICT_USER_MESSAGE),
+        );
+      }
       if (err instanceof mongoose.Error.ValidationError) {
         return next(
           new BadRequestError(errorMessages.INCORRECT_DATA_MESSAGE),
