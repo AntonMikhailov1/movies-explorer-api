@@ -54,8 +54,8 @@ const createMovie = (req, res, next) => {
       trailerLink: movie.trailerLink,
       thumbnail: movie.thumbnail,
       movieId: movie.movieId,
-      nameRu: movie.nameRu,
-      nameEn: movie.nameEn,
+      nameRU: movie.nameRU,
+      nameEN: movie.nameEN,
     }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
