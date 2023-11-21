@@ -24,8 +24,8 @@ const createMovie = (req, res, next) => {
     trailerLink,
     thumbnail,
     movieId,
-    nameRu,
-    nameEn,
+    nameRU,
+    nameEN,
   } = req.body;
   const owner = req.user._id;
 
@@ -40,8 +40,8 @@ const createMovie = (req, res, next) => {
     thumbnail,
     owner,
     movieId,
-    nameRu,
-    nameEn,
+    nameRU,
+    nameEN,
   })
     .then((movie) => res.status(httpStatus.CREATED).send({
       _id: movie._id,
