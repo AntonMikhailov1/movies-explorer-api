@@ -10,6 +10,8 @@ const allowList = [
   'http://localhost:3001',
   'http://movie-search.nomoredomainsmonster.ru',
   'https://movie-search.nomoredomainsmonster.ru',
+  'http://movie-search.nomoredomainsmonster.ru/',
+  'https://movie-search.nomoredomainsmonster.ru/',
 ];
 
 const allowMethods = 'GET,HEAD,PUT,PATCH,POST,DELETE';
