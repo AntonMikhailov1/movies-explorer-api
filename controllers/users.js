@@ -74,6 +74,7 @@ const signInUser = (req, res, next) => {
           maxAge: 3600000 * 24 * 7,
           httpOnly: true,
           sameSite: 'none',
+          secure: true,
         })
         .send({ message: 'Авторизация прошла успешно' });
     })
@@ -93,6 +94,7 @@ const signOutUser = (req, res) => {
       maxAge: 20,
       httpOnly: true,
       sameSite: 'none',
+      secure: true,
     })
     .send({ message: 'Вы вышли из системы' });
 };
