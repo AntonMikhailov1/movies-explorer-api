@@ -88,7 +88,13 @@ const signInUser = (req, res, next) => {
 };
 
 const signOutUser = (req, res) => {
-  res.clearCookie('jwt').send({ message: 'Вы вышли из системы' });
+  res
+    .cookie('jwt', 'none', {
+      maxAge: 20,
+      httpOnly: true,
+      sameSite: 'none',
+    })
+    .send({ message: 'Вы вышли из системы' });
 };
 
 const updateUser = (req, res, next) => {
